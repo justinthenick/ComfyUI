@@ -38,3 +38,5 @@ logs/
 
 ComfyUI/custom_nodes/comfyui-manager/
 
+backup_logs/
+

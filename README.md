@@ -1,8 +1,8 @@
-# ComfyUI (Fork) — Customised, Git‑Tracked, External Data Layout
+# ComfyUI (Fork) — Customised, Git-Tracked, External Data Layout
 
 This repository is my **customised ComfyUI** setup on Windows with:
 - **System Python** (no embedded Python) for full control.
-- **ComfyUI Manager** installed as a **Git submodule** under `ComfyUI/custom_nodes/comfyui-manager` so it can self‑update.
+- **ComfyUI Manager** installed as a **Git submodule** under `ComfyUI/custom_nodes/comfyui-manager` so it can self-update.
 - **Large/volatile data** stored **outside** the repo in `E:\ComfyUI_data` (models, outputs, user, extra nodes).
 - A **launcher BAT** named `run_cpu_MasterPython.bat` that runs ComfyUI via `.\ComfyUI\main.py` and redirects outputs.
 
@@ -12,7 +12,7 @@ This repository is my **customised ComfyUI** setup on Windows with:
 
 ---
 
-## 1) Prereqs (one‑time)
+## 1) Prereqs (one-time)
 - Install **Git for Windows** and **Python 3.10+**.
 - Install a matching **PyTorch** (GPU/CPU) for your setup (see PyTorch install page), then:
   ```bat
@@ -41,7 +41,7 @@ E:\ComfyUI_data\
 
 ---
 
-## 3) Repo layout (Git‑tracked)
+## 3) Repo layout (Git-tracked)
 ```
 E:\ComfyUI_windows_portable\
 ├─ ComfyUI\               # core ComfyUI sources
@@ -74,7 +74,7 @@ external:
   custom_nodes: "custom_nodes_extra"
 ```
 
-Place this file **in the repo root** so ComfyUI auto‑loads it on start.
+Place this file **in the repo root** so ComfyUI auto-loads it on start.
 
 ---
 
@@ -92,7 +92,7 @@ Typical command used inside the BAT:
   --temp-directory "E:\ComfyUI_data\outputs\temp"
 ```
 
-> The BAT also writes timestamped logs to `.\logs\`. If you prefer console‑only, remove the redirections.
+> The BAT also writes timestamped logs to `.\logs\`. If you prefer console-only, remove the redirections.
 
 ---
 
@@ -139,12 +139,12 @@ git push
 
 ---
 
-## 8) One‑click backup (repo + external data)
+## 8) One-click backup (repo + optional external data)
 Use `backup_and_tag.bat` in repo root. It will:
 - Stage and commit current changes with a timestamped message
 - Create an **annotated tag** `backup-YYYYMMDD-HHMMSS`
 - Push commits + tags to GitHub
-- Mirror `E:\ComfyUI_data` to `F:\ComfyUI_data_backup` with Robocopy
+- **Ask you** if you also want to back up external data (`E:\ComfyUI_data` → `F:\ComfyUI_data_backup`)
 
 ### Configure paths inside the script
 Open `backup_and_tag.bat` and edit the **CONFIG** section:
@@ -155,11 +155,19 @@ set "DEST=F:\ComfyUI_data_backup"
 ```
 
 ### Run it
-- Double‑click it, or
+- Double-click it, or
 - From shell:
   ```bat
   backup_and_tag.bat (optional note about this backup)
   ```
+
+After pushing to GitHub, you’ll see:
+```
+Do you want to back up external data (E:\ComfyUI_data -> F:\ComfyUI_data_backup)? (Y/N)
+```
+- **Y** → Runs Robocopy and mirrors external data.  
+- **N** → Skips data copy and only completes the Git snapshot.
+
 Logs are written to `.\backup_logs\`.
 
 ---
@@ -206,3 +214,89 @@ Restore external data from your mirrored backup if needed.
 - `extra_model_paths.yaml` is **tracked** so the mapping is portable.
 - You can keep **extra custom nodes** in `E:\ComfyUI_data\custom_nodes_extra`.
 - To symlink instead of YAML, use `mklink /J` (Admin) from repo to `E:\ComfyUI_data\...`.
+
+
+---
+
+## 13) Lifecycle at a glance
+
+### ASCII flow
+
+```
+[Fresh machine]
+      |
+      v
+ git clone --recurse-submodules
+      |
+      v
+ pip install -r ComfyUI/requirements.txt
+      |
+      v
+ Create E:\ComfyUI_data\ (models, user, outputs, custom_nodes_extra)
+      |
+      v
+ Run run_cpu_MasterPython.bat  --->  (Generate / tweak workflows)
+      |                                  |
+      |                                  v
+      |-------------------------->  backup_and_tag.bat
+                                     |            |
+                                     |            v
+                                     |        [Y] Mirror E:\ComfyUI_data -> F:\ComfyUI_data_backup
+                                     v
+                              Push repo + tag to GitHub
+
+(Periodic)
+      |
+      v
+ git fetch upstream && git merge upstream/master
+ pip install -r ComfyUI/requirements.txt
+ Test launcher; commit; tag; push
+
+(Manager updates)
+      |
+      v
+ Update in UI  --> git add ComfyUI/custom_nodes/comfyui-manager
+                   git commit -m "Update Manager submodule"
+                   git push
+                   (optionally tag)
+
+(Rollback if needed)
+      |
+      v
+ git reset --hard backup-YYYYMMDD-HHMM
+ git submodule update --init --recursive
+ Restore external data from F:\ComfyUI_data_backup (if needed)
+```
+
+### Mermaid (optional; renders on GitHub)
+
+```mermaid
+flowchart TD
+    A[Fresh machine] --> B[git clone --recurse-submodules]
+    B --> C[pip install -r ComfyUI/requirements.txt]
+    C --> D[Create E:\ComfyUI_data\ folders]
+    D --> E[Run run_cpu_MasterPython.bat]
+    E --> F[Workflows / tweaks]
+    F --> G[backup_and_tag.bat]
+    G -->|Push repo + tag| H[GitHub]
+    G --> I{Back up data?}
+    I -- Yes --> J[Robocopy E:\ComfyUI_data -> F:\ComfyUI_data_backup]
+    I -- No --> H
+
+    subgraph Periodic Upgrades
+      U1[git fetch upstream] --> U2[git merge upstream/master]
+      U2 --> U3[pip install -r ComfyUI/requirements.txt]
+      U3 --> U4[Test + commit + tag + push]
+    end
+
+    subgraph Manager Updates
+      M1[Update in Manager UI] --> M2[git add submodule path]
+      M2 --> M3[git commit && git push]
+    end
+
+    subgraph Rollback
+      R1[git reset --hard backup-YYYYMMDD-HHMM]
+      R1 --> R2[git submodule update --init --recursive]
+      R2 --> R3[Restore F:\ComfyUI_data_backup if needed]
+    end
+```

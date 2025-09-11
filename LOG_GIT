@@ -1,0 +1,17 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backup_and_tag.bat', LF will be replaced by CRLF the next time Git touches it
+error: pathspec 'the' did not match any file(s) known to git
+error: pathspec 'script' did not match any file(s) known to git
+error: pathspec 'update' did not match any file(s) known to git
+fatal: too many arguments
+Everything up-to-date
+To https://github.com/justinthenick/ComfyUI.git
+ * [new tag]           pre-wrapper -> pre-wrapper
+warning: in the working copy of 'LOG_GIT', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backup_and_tag.bat', LF will be replaced by CRLF the next time Git touches it
+error: pathspec 'the' did not match any file(s) known to git
+error: pathspec 'script' did not match any file(s) known to git
+error: pathspec 'update' did not match any file(s) known to git
+fatal: too many arguments
+Everything up-to-date
+Everything up-to-date
