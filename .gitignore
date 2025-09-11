@@ -28,3 +28,7 @@ uv.lock
 
 # keep ComfyUI submodule user data out of repo
 ComfyUI/user/
+
+# Managed by ComfyUI itself (not tracked by wrapper)
+ComfyUI/custom_nodes/comfyui-manager/
+
