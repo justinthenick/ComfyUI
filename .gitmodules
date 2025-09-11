@@ -1,4 +1,4 @@
-[submodule "custom_nodes/comfyui-manager"]
-	path = custom_nodes/comfyui-manager
-	url = https://github.com/ltdrdata/ComfyUI-Manager.git
+[submodule "ComfyUI"]
+	path = ComfyUI
+	url = https://github.com/comfyanonymous/ComfyUI.git
 	branch = main
