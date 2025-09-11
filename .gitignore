@@ -25,3 +25,6 @@ web_custom_versions/
 openapi.yaml
 filtered-openapi.yaml
 uv.lock
+
+# keep ComfyUI submodule user data out of repo
+ComfyUI/user/
