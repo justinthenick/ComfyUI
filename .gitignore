@@ -35,3 +35,6 @@ logs/
 # IMPORTANT: Track the external mapping config
 # (Remove this line if it exists in your current ignore file)
 #/* DO NOT ignore */ extra_model_paths.yaml
+
+ComfyUI/custom_nodes/comfyui-manager/
+
