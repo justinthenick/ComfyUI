@@ -1,34 +1,37 @@
+# Byte-compiled / cache
 __pycache__/
 *.py[cod]
-/output/
-/input/
-!/input/example.png
-/models/
-/temp/
-custom_nodes/*
-!custom_nodes/comfyui-manager
-!custom_nodes/example_node.py.example
-extra_model_paths.yaml
-/.vs
+
+# Virtual envs / IDE
+.venv/
+venv/
 .vscode/
 .idea/
-venv/
-.venv/
-/web/extensions/*
-!/web/extensions/logging.js.example
-!/web/extensions/core/
-/tests-ui/data/object_info.json
-/user/
-*.log
-web_custom_versions/
+.vs/
 .DS_Store
-openapi.yaml
-filtered-openapi.yaml
-uv.lock
 
-# keep ComfyUI submodule user data out of repo
-ComfyUI/user/
+# Local logs
+*.log
+logs/
 
-# Managed by ComfyUI itself (not tracked by wrapper)
-ComfyUI/custom_nodes/comfyui-manager/
+# ComfyUI generated / large artifacts (kept external anyway)
+/output/
+/temp/
+/web_custom_versions/
+/openapi.yaml
+/filtered-openapi.yaml
+/uv.lock
 
+# User content (we keep it in E:\ComfyUI_data\user, not in repo)
+/user/
+
+# Models are external (E:\ComfyUI_data\models); ignore any stray ones here
+/models/
+
+# Custom nodes — ignore everything except the Manager submodule
+/custom_nodes/*
+!/custom_nodes/comfyui-manager/
+
+# IMPORTANT: Track the external mapping config
+# (Remove this line if it exists in your current ignore file)
+#/* DO NOT ignore */ extra_model_paths.yaml
