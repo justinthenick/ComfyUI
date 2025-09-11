@@ -172,7 +172,7 @@ Logs are written to `.\backup_logs\`.
 
 ---
 
-## 9) Manual backup commands (optional)
+## 9) Manual backup commands
 If you prefer doing it manually:
 ```bash
 git add -A
@@ -268,7 +268,7 @@ Restore external data from your mirrored backup if needed.
  Restore external data from F:\ComfyUI_data_backup (if needed)
 ```
 
-### Mermaid (optional; renders on GitHub)
+### Mermaid
 
 ```mermaid
 flowchart TD

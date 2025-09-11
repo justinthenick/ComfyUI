@@ -15,3 +15,14 @@ error: pathspec 'update' did not match any file(s) known to git
 fatal: too many arguments
 Everything up-to-date
 Everything up-to-date
+warning: in the working copy of 'LOG_GIT', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backup_and_tag.bat', LF will be replaced by CRLF the next time Git touches it
+[master 1155afd1] Checkpoint: 20251109_214216 Testing the script update
+ 5 files changed, 228 insertions(+), 9 deletions(-)
+ create mode 100644 LOG_GIT
+ create mode 100644 backup_and_tag.bat
+ create mode 100644 desktop.ini
+To https://github.com/justinthenick/ComfyUI.git
+   3800d4ba..1155afd1  master -> master
+To https://github.com/justinthenick/ComfyUI.git
+ * [new tag]           backup-20251109_214216 -> backup-20251109_214216
