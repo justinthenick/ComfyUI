@@ -7,6 +7,12 @@ set "ts=%date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%"
 set "ts=%ts: =0%"
 set "LOG=logs\comfyui_%ts%.log"
 
+REM ===== Other custom dirs =====
+REM setx COMFYUI_PATH "E:\ComfyUI_windows_portable\ComfyUI"
+REM setx COMFYUI_MODEL_PATH "E:\ComfyUI_data\models"
+set COMFYUI_PATH=E:\ComfyUI_windows_portable\ComfyUI
+set COMFYUI_MODEL_PATH=E:\ComfyUI_data\models
+
 REM ===== python (system) =====
 set "PYEXE=C:\Users\justi\AppData\Local\Programs\Python\Python310\python.exe"
 set PYTHONUTF8=1
@@ -15,6 +21,7 @@ REM ===== external user & output dirs =====
 set "COMFYUI_USER_PATH=E:\ComfyUI_data\user"
 set "OUTDIR=E:\ComfyUI_data\outputs"
 set "TEMPDIR=E:\ComfyUI_data\outputs\temp"
+
 
 echo ========================================================= > "%LOG%"
 echo Launching ComfyUI: %DATE% %TIME% >> "%LOG%"

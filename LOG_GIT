@@ -26,3 +26,11 @@ To https://github.com/justinthenick/ComfyUI.git
    3800d4ba..1155afd1  master -> master
 To https://github.com/justinthenick/ComfyUI.git
  * [new tag]           backup-20251109_214216 -> backup-20251109_214216
+warning: in the working copy of 'LOG_GIT', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+[master 3217de94] Checkpoint: 20251109_214544 Update README.md
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+To https://github.com/justinthenick/ComfyUI.git
+   1155afd1..3217de94  master -> master
+To https://github.com/justinthenick/ComfyUI.git
+ * [new tag]           backup-20251109_214544 -> backup-20251109_214544
