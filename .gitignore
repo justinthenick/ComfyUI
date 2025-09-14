@@ -64,3 +64,10 @@ Update-ComfyUI.bat
 Run-ComfyUI.bat
 Run-ComfyUI.ps1
 run_cpu_MasterPython.bat
+
+# -------------------------
+# VS Code configs
+# -------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
