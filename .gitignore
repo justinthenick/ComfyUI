@@ -1,61 +1,66 @@
-﻿# ===== Logs & runtime outputs =====
-logs/
-ComfyUIOutput/
-ComfyUI/output/
-__pycache__/
+﻿# -------------------------
+# Core junk & scratch files
+# -------------------------
 *.pyc
+__pycache__/
 *.log
+*.tmp
+*.bak
 
-# ===== Custom nodes kept external (so Manager can self-update) =====
-ComfyUI/custom_nodes/*
-!ComfyUI/custom_nodes/.gitignore
+# -------------------------
+# Windows/macOS OS noise
+# -------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
 
-# ===== Heavy model dirs (never track) =====
-ComfyUI/models/
-ComfyUI/models/checkpoints/
-ComfyUI/models/vae/
-ComfyUI/models/loras/
-ComfyUI/models/controlnet/
-ComfyUI/models/embeddings/
-ComfyUI/models/upscale_models/
-ComfyUI/models/diffusion_models/
-ComfyUI/models/text_encoders/
-ComfyUI/models/unet/
-ComfyUI/models/ultralytics/
-ComfyUI/models/sams/
-
-# ===== External portable data trees (your E: layout) =====
-E:/ComfyUI_data/*
-E:\ComfyUI_data\*
-
-# ===== Virtual environments =====
+# -------------------------
+# Python venv
+# -------------------------
 .venv/
 venv/
 env/
-ENV/
 
-# ===== OS/IDE clutter =====
-.DS_Store
-Thumbs.db
-desktop.ini
-*.code-workspace
-# (We DO track .vscode because you’re using tasks/settings)
+# -------------------------
+# Logs and runtime outputs
+# -------------------------
+logs/
+ComfyUIOutput/
+ComfyUI/output/
+E:/ComfyUI_data/outputs/
 
-# ===== Build/packaging junk =====
-*.egg-info/
-build/
-dist/
+# -------------------------
+# Models (keep outside repo)
+# -------------------------
+ComfyUI/models/
+E:/ComfyUI_data/models/
 
-# ===== Local overrides =====
-extra_model_paths.yaml
+# -------------------------
+# User configs (local only)
+# -------------------------
+ComfyUI/user/
+E:/ComfyUI_data/user/
 
-# ===== Scratch files you mentioned =====
-LOG_GIT# Scratch / temp tracking
-LOG_GIT
-*.log
-*.bak
+# -------------------------
+# ComfyUI Manager auto-installs
+# -------------------------
+ComfyUI/custom_nodes/*
+!ComfyUI/custom_nodes/ComfyUI-Manager/
 
-# Scratch
-LOG_GIT
-*.log
+# -------------------------
+# Submodule handling
+# -------------------------
+# Ignore contents of submodule but keep pointer
+/ComfyUI/*
+!/ComfyUI
 
+# -------------------------
+# Scratch helper scripts (local only)
+# -------------------------
+Check-GitStatus.ps1
+Check-GitHealth.ps1
+Update-ComfyUI.bat
+Run-ComfyUI.bat
+Run-ComfyUI.ps1
+run_cpu_MasterPython.bat
