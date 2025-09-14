@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run ComfyUI (tee to logs)",
+      "type": "shell",
+      "command": ".\\Run-ComfyUI.bat",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update ComfyUI (git + submodules)",
+      "type": "shell",
+      "command": ".\\Update-ComfyUI.bat",
+      "problemMatcher": []
+    },
+    {
+      "label": "Install core requirements",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe .\\ComfyUI\\requirements.txt",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install all custom-node requirements",
+      "type": "shell",
+      "command": "powershell -NoProfile -Command \"Get-ChildItem '.\\ComfyUI\\custom_nodes' -Recurse -Filter requirements.txt | %% { .\\venv\\Scripts\\python.exe -m pip install -r $_.FullName }\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "List outdated pip packages",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe -m pip list --outdated",
+      "problemMatcher": []
+    },
+    {
+      "label": "Upgrade all pip packages",
+      "type": "shell",
+      "command": "powershell -NoProfile -Command \".\\venv\\Scripts\\python.exe -m pip list --outdated --format=freeze | %% { $_.Split('==')[0] } | %% { .\\venv\\Scripts\\python.exe -m pip install --upgrade $_ }\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "Open README",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "code -g \"${workspaceFolder}\\README.md\""
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Git Health Check",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\Check-GitStatus.ps1"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Pre-Push Review",
+      "dependsOn": [
+        "Open README",
+        "Git Health Check"
+      ],
+      "dependsOrder": "sequence"
+    }
+  ]
+}

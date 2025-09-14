@@ -1,0 +1,23 @@
+comfyUI:
+    base_path: E:/ComfyUI_data
+
+    checkpoints: models/checkpoints
+    configs: models/checkpoints   # optional, some builds still want it
+    vae: models/vae
+    loras: models/loras
+    upscale_models: models/upscale_models
+    embeddings: models/embeddings
+    controlnet: models/controlnet
+    output: outputs
+    diffusion_models: models/checkpoints
+    text_encoders: models/text_encoders #CLIP?
+    unet: models/unet
+    sams: models/sams
+    reactor: models/reactor
+    SUPIR: models/SUPIR
+    user: user
+    facerestore_models: models/facerestore_models
+    ultralytics:        models/ultralytics
+    ultralytics_bbox:   models/ultralytics/bbox
+    ultralytics_seg:    models/ultralytics/seg
+    ultralytics_segm:   models/ultralytics/seg
