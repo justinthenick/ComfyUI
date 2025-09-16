@@ -69,6 +69,38 @@
         "Git Health Check"
       ],
       "dependsOrder": "sequence"
-    }
+    },
+            {
+            "label": "Check Git Status",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/Check-GitStatus.ps1"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Check Git Clean",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/Check-GitClean.ps1"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Commit & Push",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-Command",
+                "git add .; $msg = Read-Host 'Commit message'; if ($msg -ne '') { git commit -m $msg; git push origin master } else { Write-Host 'Commit aborted: empty message' -ForegroundColor Red }"
+            ],
+            "problemMatcher": []
+        }
   ]
 }
