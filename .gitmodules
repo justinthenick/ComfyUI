@@ -2,3 +2,6 @@
 	path = ComfyUI
 	url = git@github.com:comfyanonymous/ComfyUI.git
 	ignore = dirty
+[submodule "custom_nodes/rgthree-comfy"]
+	path = custom_nodes/rgthree-comfy
+	url = https://github.com/rgthree/rgthree-comfy
