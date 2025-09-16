@@ -17,15 +17,6 @@
 [submodule "custom_nodes/ComfyUI-Custom-Scripts"]
 	path = custom_nodes/ComfyUI-Custom-Scripts
 	url = https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
-[submodule "custom_nodes/comfyui-easy-use"]
-	path = custom_nodes/comfyui-easy-use
-	url = git@github.com:justinthenick/ComfyUI.git
-[submodule "custom_nodes/comfyui-embedding_picker"]
-	path = custom_nodes/comfyui-embedding_picker
-	url = git@github.com:justinthenick/ComfyUI.git
-[submodule "custom_nodes/comfyui-inpaint-cropandstitch"]
-	path = custom_nodes/comfyui-inpaint-cropandstitch
-	url = git@github.com:justinthenick/ComfyUI.git
 [submodule "custom_nodes/ComfyUI-Manager"]
 	path = custom_nodes/ComfyUI-Manager
 	url = https://github.com/ltdrdata/ComfyUI-Manager.git
