@@ -20,3 +20,12 @@
 [submodule "custom_nodes/ComfyUI-Manager"]
 	path = custom_nodes/ComfyUI-Manager
 	url = https://github.com/ltdrdata/ComfyUI-Manager.git
+[submodule "custom_nodes/comfyui-easy-use"]
+	path = custom_nodes/comfyui-easy-use
+	url = https://github.com/yolain/ComfyUI-Easy-Use.git
+[submodule "custom_nodes/comfyui-embedding_picker"]
+	path = custom_nodes/comfyui-embedding_picker
+	url = https://github.com/Tropfchen/ComfyUI-Embedding_Picker.git
+[submodule "custom_nodes/comfyui-inpaint-cropandstitch"]
+	path = custom_nodes/comfyui-inpaint-cropandstitch
+	url = https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch.git
