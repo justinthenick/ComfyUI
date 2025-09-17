@@ -71,3 +71,4 @@ run_cpu_MasterPython.bat
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
+LOG_GIT
