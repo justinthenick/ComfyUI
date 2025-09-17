@@ -29,3 +29,7 @@
 [submodule "custom_nodes/comfyui-inpaint-cropandstitch"]
 	path = custom_nodes/comfyui-inpaint-cropandstitch
 	url = https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch.git
+[submodule "ComfyUI-Manager"]
+	ignore = dirty
+[submodule "rgthree-comfy"]
+	ignore = dirty
