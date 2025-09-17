@@ -20,6 +20,33 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# ---- Config load (default + local) ----
+function Join-Config($base, $override) {
+  if (-not $override) { return $base }
+  $h = @{}
+  $base.PSObject.Properties    | ForEach-Object { $h[$_.Name] = $_.Value }
+  $override.PSObject.Properties| ForEach-Object { $h[$_.Name] = $_.Value }
+  return [pscustomobject]$h
+}
+
+
+$CfgDefaultPath = Join-Path $PSScriptRoot 'comfy_config\settings.default.json'
+$CfgLocalPath   = Join-Path $PSScriptRoot 'comfy_config\settings.local.json'
+
+$cfg = $null
+if (Test-Path $CfgDefaultPath) { $cfg = Get-Content $CfgDefaultPath -Raw | ConvertFrom-Json }
+if (Test-Path $CfgLocalPath)   { $cfg = Join-Config $cfg (Get-Content $CfgLocalPath -Raw | ConvertFrom-Json) }
+
+# Apply config defaults only when the CLI option wasn't provided
+if ($null -ne $cfg) {
+  if ( ($null -eq $PSBoundParameters['Port'])         -and $cfg.Port)        { $Port        = [int]$cfg.Port }
+  if ( ($null -eq $PSBoundParameters['Listen'])       -and $cfg.Listen)      { $Listen      = [bool]$cfg.Listen }
+  if ( ($null -eq $PSBoundParameters['BindAddress'])  -and $cfg.BindAddress) { $BindAddress = [string]$cfg.BindAddress }
+  if ( ($null -eq $PSBoundParameters['VerboseLevel']) -and $cfg.VerboseLevel){ $VerboseLevel= [string]$cfg.VerboseLevel }
+  if ( ($null -eq $PSBoundParameters['DataDrive'])    -and $cfg.DataDrive)   { $DataDrive   = [string]$cfg.DataDrive }
+}
+
+
 # ---- Paths ----
 $ROOT    = Split-Path -Parent $PSCommandPath
 $AppRoot = Join-Path $ROOT 'ComfyUI'
@@ -52,9 +79,11 @@ if (-not $driveRoot) {
   $driveRoot = (Get-Item -LiteralPath $ROOT).PSDrive.Root  # e.g., "E:\"
 }
 
-# 2) Preferred locations, in order
+# Standardised portable root name (from config)
+$rootName = if ($cfg.UserRootName) { [string]$cfg.UserRootName } else { 'ComfyUI_data' }
+
 $preferred = @(
-  (Join-Path $driveRoot 'ComfyUI_data'),             # E:\ComfyUI_data
+  (Join-Path $driveRoot $rootName),            # E:\ComfyUI_data
   (Join-Path $env:USERPROFILE 'ComfyUI_data'),       # %USERPROFILE%\ComfyUI_data
   (Join-Path $ROOT 'Data')                           # .\Data
 )
@@ -127,9 +156,9 @@ $pyInterpArgs = @($pyArgs) + @($MainPy)
 # Force CPU-only runtime from the environment
 # Enable this is having issues on CPU only installation with GPU libraries
 if (-not $GPU) {
-    $env:CUDA_VISIBLE_DEVICES = '-1'       # torch sees no CUDA
-    # optional: avoid xformers poking CUDA
-    $DisableX = $true
+  $env:CUDA_VISIBLE_DEVICES = '-1'
+  $progArgs += '--cpu'
+  if ($cfg -and $cfg.DisableXformersOnCPU) { $progArgs += '--disable-xformers' }
 }
 
 # ---- Build ComfyUI program args ----
@@ -143,10 +172,20 @@ $progArgs = @(
   '--database-url',     $dbUrl
 )
 if (-not $GPU) {
-    $progArgs += '--cpu'
-    if ($DisableX) { $progArgs += '--disable-xformers' }
+  $progArgs += '--cpu'
+  # $disableX = $true
+  if ($cfg -and $cfg.DisableXformersOnCPU) { $progArgs += '--disable-xformers' }
+  $env:CUDA_VISIBLE_DEVICES = '-1'
 }
-if (Test-Path $extraModelYaml) { $progArgs += @('--extra-model-paths-config', $extraModelYaml) }
+
+$extraModelYaml = if ($cfg -and $cfg.ExtraModelPathsConfig) {
+  # resolve relative to repo root
+  Resolve-Path -LiteralPath (Join-Path $ROOT $cfg.ExtraModelPathsConfig) -ErrorAction SilentlyContinue
+} else {
+  Resolve-Path -LiteralPath (Join-Path $ROOT 'extra_model_paths.yaml') -ErrorAction SilentlyContinue
+}
+if ($extraModelYaml) { $progArgs += @('--extra-model-paths-config', $extraModelYaml.Path) }
+
 if ($Listen) { $progArgs += @('--listen', $BindAddress) }
 if ($VerboseLevel) { $progArgs += @('--verbose', $VerboseLevel) }
 if ($ComfyArgs) { $progArgs += $ComfyArgs }
