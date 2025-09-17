@@ -12,7 +12,7 @@ function Get-SubmoduleList {
   # IMPORTANT: foreach runs in a POSIX shell; keep quoting strictly POSIX.
   # - We print: name|path|commit|origin|describe
   $cmd = 'printf "%s|%s|%s|%s|%s\n" "$name" "$path" "$(git rev-parse HEAD)" "$(git remote get-url origin 2>/dev/null)" "$(git describe --tags --always 2>/dev/null)"'
-  & git -C $repo submodule foreach --quiet -- $cmd
+  & git -C $repo submodule foreach --quiet -- $cmd 2>$null
 }
 
 $items = @()
