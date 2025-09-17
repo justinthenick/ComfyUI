@@ -1,0 +1,10 @@
+{
+  "DataDrive": "E",
+  "Port": 8188,
+  "Listen": true,
+  "BindAddress": "0.0.0.0",
+  "VerboseLevel": "INFO",
+  "DisableXformersOnCPU": true,
+  "ExtraModelPathsConfig": ".\\extra_model_paths.yaml",
+  "UserRootName": "ComfyUI_data"
+}

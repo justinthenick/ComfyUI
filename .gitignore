@@ -72,3 +72,7 @@ run_cpu_MasterPython.bat
 !.vscode/settings.json
 !.vscode/tasks.json
 LOG_GIT
+
+
+comfy_config/settings.local.json
+
