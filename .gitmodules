@@ -5,30 +5,39 @@
 [submodule "custom_nodes/rgthree-comfy"]
 	path = custom_nodes/rgthree-comfy
 	url = https://github.com/rgthree/rgthree-comfy
+	ignore = dirty
 [submodule "custom_nodes/comfy_PoP"]
 	path = custom_nodes/comfy_PoP
 	url = https://github.com/picturesonpictures/comfy_PoP
+	ignore = dirty
 [submodule "custom_nodes/ComfyUI_IPAdapter_plus"]
 	path = custom_nodes/ComfyUI_IPAdapter_plus
 	url = https://github.com/cubiq/ComfyUI_IPAdapter_plus.git
+	ignore = dirty
 [submodule "custom_nodes/ComfyUI-Advanced-ControlNet"]
 	path = custom_nodes/ComfyUI-Advanced-ControlNet
 	url = https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git
+	ignore = dirty
 [submodule "custom_nodes/ComfyUI-Custom-Scripts"]
 	path = custom_nodes/ComfyUI-Custom-Scripts
 	url = https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
+	ignore = dirty
 [submodule "custom_nodes/ComfyUI-Manager"]
 	path = custom_nodes/ComfyUI-Manager
 	url = https://github.com/ltdrdata/ComfyUI-Manager.git
+	ignore = dirty
 [submodule "custom_nodes/comfyui-easy-use"]
 	path = custom_nodes/comfyui-easy-use
 	url = https://github.com/yolain/ComfyUI-Easy-Use.git
+	ignore = dirty
 [submodule "custom_nodes/comfyui-embedding_picker"]
 	path = custom_nodes/comfyui-embedding_picker
 	url = https://github.com/Tropfchen/ComfyUI-Embedding_Picker.git
+	ignore = dirty
 [submodule "custom_nodes/comfyui-inpaint-cropandstitch"]
 	path = custom_nodes/comfyui-inpaint-cropandstitch
 	url = https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch.git
+	ignore = dirty
 [submodule "ComfyUI-Manager"]
 	ignore = dirty
 [submodule "rgthree-comfy"]
