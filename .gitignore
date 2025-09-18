@@ -1,11 +1,13 @@
-﻿# -------------------------
+# -------------------------
 # Core junk & scratch files
 # -------------------------
 *.pyc
 __pycache__/
+**/__pycache__/
 *.log
 *.tmp
 *.bak
+.venv/
 
 # -------------------------
 # Windows/macOS OS noise
@@ -25,28 +27,24 @@ env/
 # -------------------------
 # Logs and runtime outputs
 # -------------------------
-logs/
-ComfyUIOutput/
-ComfyUI/output/
-E:/ComfyUI_data/outputs/
-
 # -------------------------
 # Models (keep outside repo)
 # -------------------------
-ComfyUI/models/
-E:/ComfyUI_data/models/
-
 # -------------------------
 # User configs (local only)
 # -------------------------
-ComfyUI/user/
-E:/ComfyUI_data/user/
+models/
+outputs/
+user/
+logs/
+db/
 
 # -------------------------
 # ComfyUI Manager auto-installs
 # -------------------------
-ComfyUI/custom_nodes/*
-!ComfyUI/custom_nodes/ComfyUI-Manager/
+# node repos and blobs
+ComfyUI/custom_nodes/
+custom_nodes/
 
 # -------------------------
 # Submodule handling
@@ -75,4 +73,15 @@ LOG_GIT
 
 
 comfy_config/settings.local.json
+db/
+.generated.extra_model_paths.yaml
 
+
+# Inventory tracking
+# Track the desired state file (checked-in), ignore the live snapshot.
+!inventory/nodes.json
+inventory/installed_nodes.json
+inventory/nodes.template.json
+inventory/installed_nodes.template.json
+inventory/last_run_inventory.json
+inventory/last_run_inventory.template.json

@@ -5,6 +5,6 @@
   "BindAddress": "0.0.0.0",
   "VerboseLevel": "INFO",
   "DisableXformersOnCPU": true,
-  "ExtraModelPathsConfig": ".\\extra_model_paths.yaml",
+  "ExtraModelPathsConfig": ".generated.extra_model_paths.yaml",
   "UserRootName": "ComfyUI_data"
 }

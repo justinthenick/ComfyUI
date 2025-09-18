@@ -10,7 +10,7 @@ param(
 
   # Convenience
   [switch]$Listen,
-  [string]$BindAddress = '0.0.0.0',
+  [string]$BindAddress = '127.0.0.1',
   [ValidateSet('TRACE','DEBUG','INFO','WARN','ERROR')]
   [string]$VerboseLevel = 'INFO',
 
@@ -98,17 +98,20 @@ catch { $DATA = [System.IO.Path]::GetFullPath($DATA) }
 
 # 5) Now safely derive subpaths
 $env:COMFYUI_USER_PATH  = Join-Path $DATA 'user'
-$env:COMFYUI_MODEL_PATH = Join-Path $DATA 'models'
+$ModelRoot = Join-Path $DATA 'models'
 $env:COMFYUI_OUTPUT_DIR = Join-Path $DATA 'outputs'
 $env:COMFYUI_TEMP_DIR   = Join-Path $env:COMFYUI_OUTPUT_DIR 'temp'
+$env:COMFYUI_DATABASE_DIR = Join-Path $DATA 'db'
+
 
 # ----------------- Python env vars -----------------
 $env:PYTHONUTF8         = '1'
 
 # Ensure dirs
-$null = New-Item -ItemType Directory -Force -Path $env:COMFYUI_USER_PATH,$env:COMFYUI_MODEL_PATH,$env:COMFYUI_OUTPUT_DIR,$env:COMFYUI_TEMP_DIR
+$null = New-Item -ItemType Directory -Force -Path $env:COMFYUI_USER_PATH,$ModelRoot,$env:COMFYUI_OUTPUT_DIR,$env:COMFYUI_TEMP_DIR
 $LogDir = Join-Path $ROOT 'logs'
 $null = New-Item -ItemType Directory -Force -Path $LogDir
+New-Item -ItemType Directory -Force -Path $env:COMFYUI_DATABASE_DIR | Out-Null
 
 # Custom nodes junction (portable)
 $TopNodes    = Join-Path $ROOT    'custom_nodes'
@@ -153,16 +156,9 @@ $dbUrl  = ConvertTo-SqliteUrl $dbFile
 $MainPy = Join-Path $AppRoot 'main.py'
 $pyInterpArgs = @($pyArgs) + @($MainPy)
 
-# Force CPU-only runtime from the environment
-# Enable this is having issues on CPU only installation with GPU libraries
-if (-not $GPU) {
-  $env:CUDA_VISIBLE_DEVICES = '-1'
-  $progArgs += '--cpu'
-  if ($cfg -and $cfg.DisableXformersOnCPU) { $progArgs += '--disable-xformers' }
-}
+
 
 # ---- Build ComfyUI program args ----
-$extraModelYaml = Join-Path $ROOT 'extra_model_paths.yaml'
 $progArgs = @(
   '--windows-standalone-build',
   '--port', $Port,
@@ -171,20 +167,46 @@ $progArgs = @(
   '--temp-directory',   $env:COMFYUI_TEMP_DIR,
   '--database-url',     $dbUrl
 )
+
+# CPU-only flags (single place)
 if (-not $GPU) {
-  $progArgs += '--cpu'
-  # $disableX = $true
-  if ($cfg -and $cfg.DisableXformersOnCPU) { $progArgs += '--disable-xformers' }
   $env:CUDA_VISIBLE_DEVICES = '-1'
+  $progArgs += '--cpu'
+  if ($cfg -and $cfg.DisableXformersOnCPU) { $progArgs += '--disable-xformers' }
 }
 
-$extraModelYaml = if ($cfg -and $cfg.ExtraModelPathsConfig) {
-  # resolve relative to repo root
-  Resolve-Path -LiteralPath (Join-Path $ROOT $cfg.ExtraModelPathsConfig) -ErrorAction SilentlyContinue
-} else {
-  Resolve-Path -LiteralPath (Join-Path $ROOT 'extra_model_paths.yaml') -ErrorAction SilentlyContinue
+# ---- Extra model paths (supports generated OR template) ----
+$usedCfg  = $null
+$genYaml  = Join-Path $ROOT '.generated.extra_model_paths.yaml'
+$explicit = $null
+
+if ($cfg -and $cfg.ExtraModelPathsConfig) {
+  $p = $cfg.ExtraModelPathsConfig
+  $explicit = if ([System.IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $ROOT $p }
 }
-if ($extraModelYaml) { $progArgs += @('--extra-model-paths-config', $extraModelYaml.Path) }
+
+# Case 1: config points straight at the generated file -> use it as-is
+if ($explicit -and ($explicit -like '*\.generated.extra_model_paths.yaml') -and (Test-Path -LiteralPath $explicit)) {
+  $usedCfg = $explicit
+}
+else {
+  # Case 2: config (or default) is a template -> generate
+  $template = if ($explicit) { $explicit } else { Join-Path $ROOT 'extra_model_paths.template.yaml' }
+  if (Test-Path -LiteralPath $template) {
+    $raw         = Get-Content -LiteralPath $template -Raw
+    $dataForward = $DATA.ToString().Replace('\','/')
+    $raw.Replace('{{DATA_ROOT}}', $dataForward) | Set-Content -LiteralPath $genYaml -Encoding UTF8
+    $usedCfg = $genYaml
+  }
+}
+
+if ($usedCfg) {
+  $progArgs += @('--extra-model-paths-config', $usedCfg)
+  Write-Host "[INFO] ExtraModelPaths: $usedCfg"
+} else {
+  Write-Host "[WARN] No extra-model paths config found or generated."
+}
+
 
 if ($Listen) { $progArgs += @('--listen', $BindAddress) }
 if ($VerboseLevel) { $progArgs += @('--verbose', $VerboseLevel) }
@@ -202,6 +224,33 @@ Write-Host "[INFO] Output: $($env:COMFYUI_OUTPUT_DIR)" -ForegroundColor DarkCyan
 Write-Host "[INFO] Temp: $($env:COMFYUI_TEMP_DIR)" -ForegroundColor DarkCyan
 Write-Host "[INFO] DB: $dbFile" -ForegroundColor DarkCyan
 Write-Host "[DEBUG] Launch: $pyExe $($pyInterpArgs -join ' ') $($progArgs -join ' ')" -ForegroundColor Gray
+
+# ---- Inventory (bootstrap + pre-snapshot) ----
+try {
+  $InventoryScript = Join-Path $ROOT 'Tools\NodeInventory.ps1'
+  if (Test-Path $InventoryScript) {
+    . $InventoryScript
+
+    $InvDir     = Join-Path $ROOT 'inventory'
+    New-Item -ItemType Directory -Force -Path $InvDir | Out-Null
+
+    $DesiredInv = Join-Path $InvDir 'nodes.json'
+    if (-not (Test-Path $DesiredInv)) {
+      $Template = Join-Path $InvDir 'nodes.template.json'
+      if (Test-Path $Template) { Copy-Item $Template $DesiredInv }
+    }
+
+    # Bootstrap missing git nodes on a fresh clone
+    Install-DesiredNodes -AppRoot $AppRoot -DesiredPath $DesiredInv -Bootstrap:$true
+
+    # Pre-run snapshot of what's installed right now
+    Export-InstalledNodeInventory -AppRoot $AppRoot -Output (Join-Path $InvDir 'installed_nodes.json')
+  } else {
+    Write-Host "[INV] Tools\NodeInventory.ps1 not found; skipping inventory." -ForegroundColor DarkYellow
+  }
+} catch {
+  Write-Host "[INV] Inventory step failed: $($_.Exception.Message)" -ForegroundColor Yellow
+}
 
 # Launch
 $p = Start-Process -FilePath $pyExe `
@@ -227,3 +276,10 @@ if (-not $NoTail) {
 } else {
   Write-Host "[INFO] Not tailing logs. PID: $($p.Id)  OUT: $logOut  ERR: $logErr" -ForegroundColor Gray
 }
+
+# Post-run inventory snapshot
+try {
+  if ($InvDir) {
+    Export-InstalledNodeInventory -AppRoot $AppRoot -Output (Join-Path $InvDir 'installed_nodes.json')
+  }
+} catch {}   

@@ -1,0 +1,25 @@
+comfyUI:
+  base_path: "{{DATA_ROOT}}"
+
+  # Standard categories
+  checkpoints: models/checkpoints
+  configs: models/checkpoints
+  vae: models/vae
+  loras: models/loras
+  upscale_models: models/upscale_models
+  embeddings: models/embeddings
+  controlnet: models/controlnet
+  output: outputs
+  diffusion_models: models/checkpoints
+  text_encoders: models/text_encoders
+  unet: models/unet
+  sams: models/sams
+  reactor: models/reactor
+  SUPIR: models/SUPIR
+  facerestore_models: models/facerestore_models
+
+  # Ultralytics (used by some nodes)
+  ultralytics: models/ultralytics
+  ultralytics_bbox: models/ultralytics/bbox
+  ultralytics_seg: models/ultralytics/seg
+  ultralytics_segm: models/ultralytics/seg
